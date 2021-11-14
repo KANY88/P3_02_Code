@@ -12,7 +12,7 @@ Télécharger Android Studio à l'adresse **https://developer.android.com/studio
 Cliquez sur "Check out project from version control" et selectionnez Git :
 
 
-## **4 -** Collez l'Url précédemment cloné et cliquer sur clone.
+## **4 -** Collez l'Url précédemment copié et cliquer sur clone.
 
 
 ## **5 -** Attendre la fin de la compilation du projet Android. 
