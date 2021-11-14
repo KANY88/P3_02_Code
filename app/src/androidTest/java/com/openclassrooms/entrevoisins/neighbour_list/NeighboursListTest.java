@@ -37,6 +37,12 @@ import static com.openclassrooms.entrevoisins.utils.RecyclerViewItemCountAsserti
 import static org.hamcrest.core.AllOf.*;
 import static org.hamcrest.core.AllOf.allOf;
 import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.runners.MethodSorters.NAME_ASCENDING;
+
+import org.junit.runners.MethodSorters;
+
+import org.junit.FixMethodOrder;
+import org.junit.Test;
 
 
 
@@ -44,6 +50,7 @@ import static org.hamcrest.core.IsNull.notNullValue;
  * Test class for list of neighbours
  */
 @RunWith(AndroidJUnit4.class)
+@FixMethodOrder(NAME_ASCENDING)
 public class NeighboursListTest {
 
     // This is fixed
@@ -71,7 +78,7 @@ public class NeighboursListTest {
      * We ensure that our recyclerview is displaying at least on item
      */
     @Test
-    public void myNeighboursList_shouldNotBeEmpty() {
+    public void A_myNeighboursList_shouldNotBeEmpty() {
         // First scroll to the position that needs to be matched and click on it.
         onView(ViewMatchers.withId(R.id.list_neighbours))
                 .check(matches(hasMinimumChildCount(1)));
@@ -81,7 +88,7 @@ public class NeighboursListTest {
      * When we delete an item, the item is no more shown
      */
     @Test
-    public void myNeighboursList_deleteAction_shouldRemoveItem() {
+    public void B_myNeighboursList_deleteAction_shouldRemoveItem() throws InterruptedException {
         // Given : We remove the element at position 2
         onView(ViewMatchers.withId(R.id.list_neighbours)).check(withItemCount(ITEMS_COUNT));
         // When perform a click on a delete icon
@@ -89,13 +96,16 @@ public class NeighboursListTest {
                 .perform(RecyclerViewActions.actionOnItemAtPosition(2, new DeleteViewAction()));
         // Then : the number of element is 11
         onView(ViewMatchers.withId(R.id.list_neighbours)).check(withItemCount(ITEMS_COUNT-1));
+
+
+
     }
 
     /**
      * Open Activity detail, when click on list element.
      */
     @Test
-    public void myNeighboursList_onClickItem_shouldOpenDetailActivity() {
+    public void C_myNeighboursList_onClickItem_shouldOpenDetailActivity() {
         //Given : Start Detail Activity
         //when perform a click on item position
         onView(withId(R.id.list_neighbours))
@@ -108,14 +118,14 @@ public class NeighboursListTest {
      * Check if the name in DetailActivity is the same as the item selected.
      */
     @Test
-    public void detailNeighbourName_onDetailActivity_isCorrect() {
+    public void D_detailNeighbourName_onDetailActivity_isCorrect() {
         Neighbour neighbour = neighbourList.get(POSITION_ITEM);
 
         //Given : Proper name Textview in detailActivity
         //when : open detailActivity
         onView(withId(R.id.list_neighbours))
                 .perform(RecyclerViewActions.actionOnItemAtPosition(POSITION_ITEM, click()));
-        //Then : we check if text Name displayed in DetailActivity match with neigbour name.
+        //Then : we check if text Name displayed in DetailActivity match with neighbour name.
         onView(withId(R.id.profileName)).check(matches(withText(neighbour.getName())));
     }
 
@@ -123,18 +133,12 @@ public class NeighboursListTest {
      * Check if favorite list contain items marked as favorite.
      */
     @Test
-    public void favoritesList_onFavoriteTab_showFavoriteItems() {
+    public void E_favoritesList_onFavoriteTab_showFavoriteItems() {
         //Given : Favorites list in favorite Tab.
 
-        //when : add 2 items in favorite onClick on floating action button.
+        //when : add1 items in favorite onClick on floating action button.
         onView(allOf(withId(R.id.list_neighbours), isCompletelyDisplayed()))
                 .perform(RecyclerViewActions.actionOnItemAtPosition(POSITION_ITEM, click()));
-        onView(withId(R.id.flot_Favoris))
-                .perform(click());
-        pressBack();
-
-        onView(allOf(withId(R.id.list_neighbours), isCompletelyDisplayed()))
-                .perform(RecyclerViewActions.actionOnItemAtPosition(POSITION_ITEM+1, click()));
         onView(withId(R.id.flot_Favoris))
                 .perform(click());
         pressBack();
@@ -142,25 +146,28 @@ public class NeighboursListTest {
         //swipe to favorite Tab.
         onView(withId(R.id.container)).perform(swipeLeft());
 
-        //Then : Check if the number of items in Favorite list is same as the number neigbours we added.
-        onView(withId(R.id.list_neighboursFavorite)).check(withItemCount(2));
+        //Then : Check if the number of items in Favorite list is same as the number neighbours we added.
+        onView(withId(R.id.list_neighboursFavorite)).check(withItemCount(1));
+        onView(ViewMatchers.withId(R.id.list_neighboursFavorite))
+                .perform(RecyclerViewActions.actionOnItemAtPosition( 0, new DeleteViewAction()));
+
     }
 
     /**
      * When we delete an item in favorite, the item is no more shown
      */
     @Test
-    public void myNeighboursListFavorite_deleteAction_shouldRemoveItemFromFavorite() {
+    public void F_myNeighboursListFavorite_deleteAction_shouldRemoveItemFromFavorite() {
+
         // Given : We remove the item in favorite List.
 
         //add item in favorite.
         onView(withId(R.id.list_neighbours))
-                .perform(RecyclerViewActions.actionOnItemAtPosition(POSITION_ITEM, click()));
+                .perform(RecyclerViewActions.actionOnItemAtPosition(POSITION_ITEM +1, click()));
         onView(withId(R.id.flot_Favoris))
                 .perform(click());
         pressBack();
         onView(withId(R.id.container)).perform(swipeLeft());
-
         //check if list is not empty.
         onView(ViewMatchers.withId(R.id.list_neighboursFavorite)).check(withItemCount(1));
 
@@ -169,6 +176,8 @@ public class NeighboursListTest {
                 .perform(RecyclerViewActions.actionOnItemAtPosition( 0, new DeleteViewAction()));
         // Then : the number of element is 11
         onView(ViewMatchers.withId(R.id.list_neighboursFavorite)).check(withItemCount(0));
+
+
     }
 }
 
